@@ -206,6 +206,10 @@ func TestSimulatorBitBoxSyncIdentity(t *testing.T) {
 		}
 
 		identity, err := device.BitBoxSyncIdentity()
+		// BitBoxSync is an optional firmware feature; disabled requests return ErrDisabled.
+		if isErrorCode(err, ErrDisabled) {
+			t.Skip("BitBoxSync is disabled in this simulator build")
+		}
 		require.NoError(t, err)
 		require.Len(t, identity.AuthPublicKey, ed25519.PublicKeySize)
 		require.Len(t, identity.WrapPublicKey, bitBoxSyncWrapPublicKeyLen)
@@ -229,6 +233,9 @@ func TestSimulatorBitBoxSyncSignaturesAndUnwrap(t *testing.T) {
 		}
 
 		identity, err := device.BitBoxSyncIdentity()
+		if isErrorCode(err, ErrDisabled) {
+			t.Skip("BitBoxSync is disabled in this simulator build")
+		}
 		require.NoError(t, err)
 		keyID := protocol.KeyIDFromAuthPublicKey(identity.AuthPublicKey)
 		wrapPublicKey := bitBoxSyncWrapPublicKey(t, identity)

@@ -29,7 +29,6 @@ const (
 	btcTransactionTestVectorsFilename = "testdata/btc-transaction-test-vectors.json"
 	btcVectorStdoutStableFor          = 50 * time.Millisecond
 	btcVectorStdoutTimeout            = 5 * time.Second
-	btcVectorDeviceErrorDisabled      = 106
 )
 
 type btcTestVectorOutcome string
@@ -700,7 +699,7 @@ func assertBTCVectorSetupOutcome(
 		require.Error(t, err)
 		clientUnsupported := err.Error() == UnsupportedError(*expectation.UnsupportedVersion).Error()
 		deviceUnsupported := isErrorCode(err, ErrInvalidInput) ||
-			isErrorCode(err, btcVectorDeviceErrorDisabled)
+			isErrorCode(err, ErrDisabled)
 		require.Truef(
 			t,
 			clientUnsupported || deviceUnsupported,
